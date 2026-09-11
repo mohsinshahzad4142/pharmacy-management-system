@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+﻿import dotenv from 'dotenv';
 dotenv.config();
 
 import express, { Request, Response, NextFunction } from 'express';
@@ -660,42 +660,12 @@ app.get('/api/reports/chart', verifyToken, async (req: Request, res: Response) =
 });
 // ==========================================
 // SERVER STARTUP
-import express from 'express';
-import { PrismaClient } from '@prisma/client';
-import cors from 'cors';
-
-const app = express();
-app.use(express.json());
-app.use(cors());
-
-// Safe Prisma Client initialization
-let prisma: PrismaClient | null = null;
-let initError = '';
-
-try {
-  prisma = new PrismaClient();
-} catch (err: any) {
-  initError = err.message;
-  console.error("Prisma init error:", err);
-}
-
-// Diagnostic Root Route
-app.get("/", async (req, res) => {
-  let dbStatus = "Connected successfully";
-  
-  try {
-    if (!prisma) {
-      throw new Error("Prisma client failed to initialize: " + initError);
-    }
-    await prisma.$queryRaw`SELECT 1`;
-  } catch (err: any) {
-    dbStatus = "Database Connection Error: " + err.message;
-  }
-
+// ==========================================
+// Vercel Diagnostic Route
+app.get("/", (req, res) => {
   res.json({
     status: "success",
-    message: "Pharmacy Management API is live and running!",
-    databaseStatus: dbStatus,
+    message: "Pharmacy Management API is live!",
     envCheck: {
       hasDatabaseUrl: !!process.env.DATABASE_URL,
       hasJwtSecret: !!process.env.JWT_SECRET
@@ -703,13 +673,12 @@ app.get("/", async (req, res) => {
   });
 });
 
-// Local development server
+// Local development server (Sirf local par listen karega)
 if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running locally on port ${PORT}`);
   });
 }
 
-// Vercel Serverless Export
+// Vercel Serverless Export (Sab se aakhri line)
 module.exports = app;
