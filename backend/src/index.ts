@@ -668,18 +668,18 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Safe initialization with error catching
+// Safe Prisma Client initialization
 let prisma: PrismaClient | null = null;
-let initError: string = '';
+let initError = '';
 
 try {
   prisma = new PrismaClient();
 } catch (err: any) {
   initError = err.message;
-  console.error("Prisma Client Init Error:", err);
+  console.error("Prisma init error:", err);
 }
 
-// Root Diagnostic Route (Ab yeh 500 error ki bajaye bataye ga ke masla kya hai)
+// Diagnostic Root Route
 app.get("/", async (req, res) => {
   let dbStatus = "Connected successfully";
   
@@ -687,23 +687,29 @@ app.get("/", async (req, res) => {
     if (!prisma) {
       throw new Error("Prisma client failed to initialize: " + initError);
     }
-    // Test database query
     await prisma.$queryRaw`SELECT 1`;
   } catch (err: any) {
     dbStatus = "Database Connection Error: " + err.message;
   }
 
   res.json({
-    status: "diagnostics",
-    message: "Pharmacy Management API backend is responding!",
+    status: "success",
+    message: "Pharmacy Management API is live and running!",
     databaseStatus: dbStatus,
-    environmentChecks: {
+    envCheck: {
       hasDatabaseUrl: !!process.env.DATABASE_URL,
-      hasJwtSecret: !!process.env.JWT_SECRET,
-      nodeEnv: process.env.NODE_ENV || "not set"
+      hasJwtSecret: !!process.env.JWT_SECRET
     }
   });
 });
+
+// Local development server
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
 
 // Vercel Serverless Export
 module.exports = app;
