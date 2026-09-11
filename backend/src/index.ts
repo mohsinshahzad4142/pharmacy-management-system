@@ -680,6 +680,5 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
-// Vercel Serverless Function export (Yeh line Vercel ka crash rokay gi!)
-export default app;
+// Vercel ke liye sirf yeh exact line honi chahiye
 module.exports = app;
