@@ -661,12 +661,19 @@ app.get('/api/reports/chart', verifyToken, async (req: Request, res: Response) =
 // ==========================================
 // SERVER STARTUP
 // ==========================================
-app.listen(PORT, async () => {
-  console.log(`🚀 Server is running smoothly on port ${PORT}`);
-  try {
-    await prisma.$connect();
-    console.log("📁 PostgreSQL Database connected successfully.");
-  } catch (error: any) {
-    console.log("⚠️ Database connection error:", error.message);
-  }
-});
+// Local development ke liye (Vercel par yeh skip hoga)
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, async () => {
+    console.log(`🚀 Server is running smoothly on port ${PORT}`);
+    try {
+      await prisma.$connect();
+      console.log("📁 PostgreSQL Database connected successfully.");
+    } catch (error: any) {
+      console.log("⚠️ Database connection error:", error.message);
+    }
+  });
+}
+
+// Vercel Serverless Function export
+export default app;
