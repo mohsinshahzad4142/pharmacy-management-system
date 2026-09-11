@@ -24,7 +24,14 @@ const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:3000',                              // Local testing ke liye
+    'https://pharmacy-management-system-livid.vercel.app' // Aapka live frontend domain
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}));
 app.use(express.json({ limit: '50mb' })); // Bulk import ke liye limit barha di
 
 app.use('/api/customers', customerRoutes);
