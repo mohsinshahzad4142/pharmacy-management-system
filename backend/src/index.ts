@@ -660,7 +660,6 @@ app.get('/api/reports/chart', verifyToken, async (req: Request, res: Response) =
 });
 // ==========================================
 // SERVER STARTUP
-// ==========================================
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
@@ -669,32 +668,42 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Singleton Prisma Client for Serverless (Vercel crash roknay ke liye)
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
-export const prisma = globalForPrisma.prisma || new PrismaClient();
+// Safe initialization with error catching
+let prisma: PrismaClient | null = null;
+let initError: string = '';
 
-if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = prisma;
+try {
+  prisma = new PrismaClient();
+} catch (err: any) {
+  initError = err.message;
+  console.error("Prisma Client Init Error:", err);
 }
 
-// Root route taake browser ya Vercel par kholne par error na aaye
-app.get("/", (req, res) => {
-  res.json({ status: "success", message: "Pharmacy Management API is live and running!" });
-});
+// Root Diagnostic Route (Ab yeh 500 error ki bajaye bataye ga ke masla kya hai)
+app.get("/", async (req, res) => {
+  let dbStatus = "Connected successfully";
+  
+  try {
+    if (!prisma) {
+      throw new Error("Prisma client failed to initialize: " + initError);
+    }
+    // Test database query
+    await prisma.$queryRaw`SELECT 1`;
+  } catch (err: any) {
+    dbStatus = "Database Connection Error: " + err.message;
+  }
 
-// Local development ke liye (Vercel par yeh skip hoga)
-if (process.env.NODE_ENV !== "production") {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, async () => {
-    console.log(`🚀 Server is running smoothly on port ${PORT}`);
-    try {
-      await prisma.$connect();
-      console.log("📁 PostgreSQL Database connected successfully.");
-    } catch (error: any) {
-      console.log("⚠️ Database connection error:", error.message);
+  res.json({
+    status: "diagnostics",
+    message: "Pharmacy Management API backend is responding!",
+    databaseStatus: dbStatus,
+    environmentChecks: {
+      hasDatabaseUrl: !!process.env.DATABASE_URL,
+      hasJwtSecret: !!process.env.JWT_SECRET,
+      nodeEnv: process.env.NODE_ENV || "not set"
     }
   });
-}
+});
 
-// Vercel ke liye sirf yeh exact line honi chahiye
+// Vercel Serverless Export
 module.exports = app;
