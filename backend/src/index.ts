@@ -675,5 +675,6 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
-// Vercel Serverless Function export
+// Vercel Serverless Function export (Yeh line Vercel ka crash rokay gi!)
 export default app;
+module.exports = app;
