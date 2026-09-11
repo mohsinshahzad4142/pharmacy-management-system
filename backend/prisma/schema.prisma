@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Category {
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
+  description String?
+  medicines   Medicine[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Medicine {
+  id            Int            @id @default(autoincrement())
+  name          String
+  genericName   String?
+  barcode       String?        @unique   // <--- یہ نئی لائن اب یہاں شامل ہو چکی ہے
+  price         Float
+  stock         Int
+  expiryDate    DateTime
+  categoryId    Int
+  category      Category       @relation(fields: [categoryId], references: [id])
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  saleItems     SaleItem[]
+  purchaseItems PurchaseItem[]
+}
+
+model Sale {
+  id         Int        @id @default(autoincrement())
+  totalPrice Float
+  createdAt  DateTime   @default(now())
+  items      SaleItem[]
+}
+
+model SaleItem {
+  id         Int      @id @default(autoincrement())
+  saleId     Int
+  sale       Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  medicineId Int
+  medicine   Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade) // 👈 Yahan onDelete: Cascade add karein
+  quantity   Int
+  price      Float
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("Cashier") // Super Admin, Admin, Pharmacist, Cashier, Inventory Manager
+  createdAt DateTime @default(now())
+}
+
+model Supplier {
+  id        Int        @id @default(autoincrement())
+  name      String
+  phone     String?
+  email     String?
+  address   String?
+  purchases Purchase[]
+  createdAt DateTime   @default(now())
+}
+
+model Purchase {
+  id          Int            @id @default(autoincrement())
+  supplierId  Int
+  supplier    Supplier       @relation(fields: [supplierId], references: [id])
+  totalAmount Float
+  items       PurchaseItem[]
+  createdAt   DateTime       @default(now())
+}
+
+model PurchaseItem {
+  id         Int      @id @default(autoincrement())
+  purchaseId Int
+  purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  medicineId Int
+  medicine   Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade) // 👈 Yahan bhi onDelete: Cascade add karein
+  quantity   Int
+  costPrice  Float    
+}
+
+model Expense {
+  id          Int      @id @default(autoincrement())
+  title       String   // خرچے کا نام جیسے: Electricity Bill, Salary
+  amount      Float    // خرچے کی رقم
+  date        DateTime @default(now()) // خرچے کی تاریخ
+  description String?  // مزید تفصیل (Optional)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Customer Table (گاہک کا ریکارڈ)
+model Customer {
+  id        Int              @id @default(autoincrement())
+  name      String
+  phone     String?
+  address   String?            
+  totalDue  Float            @default(0.00)
+  createdAt DateTime         @default(now())
+  
+  // ریلیشن شپ
+  ledgers   CustomerLedger[]
+}
+
+// Customer Ledger Table (ادھار اور وصولی کی ہسٹری)
+model CustomerLedger {
+  id              Int      @id @default(autoincrement())
+  customerId      Int
+  customer        Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  transactionType String   // اس میں 'credit' یا 'payment' آئے گا
+  amount          Float
+  description     String?
+  date            DateTime @default(now())
+}
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  userEmail String
+  action    String   // DELETE, UPDATE, CREATE
+  details   String
+  createdAt DateTime @default(now())
+}
