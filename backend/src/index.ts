@@ -661,6 +661,22 @@ app.get('/api/reports/chart', verifyToken, async (req: Request, res: Response) =
 // ==========================================
 // SERVER STARTUP
 // ==========================================
+import express from 'express';
+import { PrismaClient } from '@prisma/client';
+import cors from 'cors';
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+// Singleton Prisma Client for Serverless (Vercel crash roknay ke liye)
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
+export const prisma = globalForPrisma.prisma || new PrismaClient();
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
+}
+
 // Root route taake browser ya Vercel par kholne par error na aaye
 app.get("/", (req, res) => {
   res.json({ status: "success", message: "Pharmacy Management API is live and running!" });
