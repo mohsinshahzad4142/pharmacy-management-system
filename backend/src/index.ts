@@ -661,6 +661,11 @@ app.get('/api/reports/chart', verifyToken, async (req: Request, res: Response) =
 // ==========================================
 // SERVER STARTUP
 // ==========================================
+// Root route taake browser ya Vercel par kholne par error na aaye
+app.get("/", (req, res) => {
+  res.json({ status: "success", message: "Pharmacy Management API is live and running!" });
+});
+
 // Local development ke liye (Vercel par yeh skip hoga)
 if (process.env.NODE_ENV !== "production") {
   const PORT = process.env.PORT || 5000;
