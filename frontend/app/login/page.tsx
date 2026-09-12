@@ -16,7 +16,10 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
+      // Live backend URL (localhost khatam!)
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://pharmacy-management-system-jcvq.vercel.app';
+
+      const response = await axios.post(`${API_URL}/api/auth/login`, {
         email,
         password
       });
