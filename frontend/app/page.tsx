@@ -877,7 +877,61 @@ export default function Home() {
           </table>
         </div>
       </div>
+{/* Receipt Modal Popup */}
+      {showReceipt && latestSale && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full print:shadow-none">
+            <div className="text-center mb-4">
+              <h2 className="text-2xl font-bold text-gray-800">Pharmacy Receipt</h2>
+              <p className="text-xs text-gray-500">Sale ID: #{latestSale.id}</p>
+              <p className="text-xs text-gray-500">Date: {new Date(latestSale.createdAt).toLocaleString()}</p>
+            </div>
 
+            <div className="border-t border-b py-3 mb-4">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b text-gray-600">
+                    <th className="text-left pb-1">Item</th>
+                    <th className="text-center pb-1">Qty</th>
+                    <th className="text-right pb-1">Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(latestSale.items || []).map((item: any, idx: number) => (
+                    <tr key={idx} className="border-b border-dashed text-gray-700">
+                      <td className="py-2">{item.name}</td>
+                      <td className="text-center py-2">{item.quantity}</td>
+                      <td className="text-right py-2">Rs. {item.price * item.quantity}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="flex justify-between font-bold text-lg mb-6 text-gray-800">
+              <span>Total Amount:</span>
+              <span className="text-emerald-600">Rs. {latestSale.totalAmount || totalBill}</span>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  window.print();
+                }}
+                className="flex-1 bg-emerald-600 text-white py-2 rounded font-semibold hover:bg-emerald-700 transition"
+              >
+                🖨️ Print Slip
+              </button>
+              <button
+                onClick={() => setShowReceipt(false)}
+                className="flex-1 bg-gray-600 text-white py-2 rounded font-semibold hover:bg-gray-700 transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
