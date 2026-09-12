@@ -35,7 +35,7 @@ export default function ReportsPage() {
       setLoading(true);
       setErrorMsg('');
       const config = { headers: { Authorization: `Bearer ${token}` } };
-      const res = await axios.get('http://localhost:5000/api/reports/summary', config);
+      const res = await axios.get('https://pharmacy-management-system-jcvq.vercel.app/api/reports/summary', config);
       
       if (res.data?.success) {
         setReportData(res.data.data);
@@ -61,7 +61,7 @@ export default function ReportsPage() {
 
     try {
       const config = { headers: { Authorization: `Bearer ${token}` } };
-      const res = await axios.get(`http://localhost:5000/api/reports/chart?filter=${chartFilter}`, config);
+      const res = await axios.get(`https://pharmacy-management-system-jcvq.vercel.app/api/reports/chart?filter=${chartFilter}`, config);
       
       if (res.data?.success) {
         setChartData(res.data.data);

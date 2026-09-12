@@ -33,7 +33,7 @@ export default function ExpensesPage() {
   const fetchExpenses = async () => {
     const token = getToken();
     try {
-      const res = await fetch("http://localhost:5000/api/expenses", {
+      const res = await fetch("https://pharmacy-management-system-jcvq.vercel.app/api/expenses", {
         headers: {
           "Authorization": token ? `Bearer ${token}` : "",
           "Content-Type": "application/json"
@@ -63,7 +63,7 @@ export default function ExpensesPage() {
     
     const token = getToken();
     try {
-      const res = await fetch(`http://localhost:5000/api/expenses/${id}`, {
+      const res = await fetch(`https://pharmacy-management-system-jcvq.vercel.app/api/expenses/${id}`, {
         method: "DELETE",
         headers: { "Authorization": token ? `Bearer ${token}` : "" }
       });
@@ -110,8 +110,8 @@ export default function ExpensesPage() {
     const token = getToken();
     // اگر editingId موجود ہے تو PUT ریکوئسٹ ورنہ POST
     const url = editingId 
-      ? `http://localhost:5000/api/expenses/${editingId}` 
-      : "http://localhost:5000/api/expenses";
+      ? `https://pharmacy-management-system-jcvq.vercel.app/api/expenses/${editingId}` 
+      : "https://pharmacy-management-system-jcvq.vercel.app/api/expenses";
     const method = editingId ? "PUT" : "POST";
 
     try {

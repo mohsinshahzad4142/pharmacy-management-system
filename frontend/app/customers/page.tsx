@@ -28,7 +28,7 @@ export default function CustomersPage() {
   // کسٹمرز کا ڈیٹا بیک اینڈ سے لانے کا فنکشن
   const fetchCustomers = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/customers");
+      const response = await axios.get("https://pharmacy-management-system-jcvq.vercel.app/api/customers");
       if (response.data.success || response.data.data) {
         setCustomers(response.data.data || response.data);
       }
@@ -49,11 +49,11 @@ export default function CustomersPage() {
     try {
       if (editingId) {
         // Edit existing customer
-        await axios.put(`http://localhost:5000/api/customers/${editingId}`, customerForm);
+        await axios.put(`https://pharmacy-management-system-jcvq.vercel.app/api/customers/${editingId}`, customerForm);
         alert("Customer updated successfully!");
       } else {
         // Add new customer
-        await axios.post("http://localhost:5000/api/customers", customerForm);
+        await axios.post("https://pharmacy-management-system-jcvq.vercel.app/api/customers", customerForm);
         alert("Customer added successfully!");
       }
 
@@ -80,7 +80,7 @@ export default function CustomersPage() {
   const handleDelete = async (id: number) => {
     if (confirm("Are you sure you want to delete this customer?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/customers/${id}`);
+        await axios.delete(`https://pharmacy-management-system-jcvq.vercel.app/api/customers/${id}`);
         fetchCustomers();
         alert("Customer deleted successfully!");
       } catch (error: any) {

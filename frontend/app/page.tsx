@@ -54,9 +54,9 @@ export default function Home() {
     try {
       const config = { headers: { Authorization: `Bearer ${token}` } };
       const [medRes, catRes, salesRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/medicines', config),
-        axios.get('http://localhost:5000/api/categories', config),
-        axios.get('http://localhost:5000/api/sales', config)
+        axios.get('https://pharmacy-management-system-jcvq.vercel.app/api/medicines', config),
+        axios.get('https://pharmacy-management-system-jcvq.vercel.app/api/categories', config),
+        axios.get('https://pharmacy-management-system-jcvq.vercel.app/api/sales', config)
       ]);
 
       if (medRes.data?.data) setMedicines(medRes.data.data);
@@ -189,7 +189,7 @@ export default function Home() {
     e.preventDefault();
     const token = localStorage.getItem('token');
     try {
-      await axios.post('http://localhost:5000/api/categories', catForm, {
+      await axios.post('https://pharmacy-management-system-jcvq.vercel.app/api/categories', catForm, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setCatForm({ name: '', description: '' });
@@ -218,11 +218,11 @@ export default function Home() {
       const config = { headers: { Authorization: `Bearer ${token}` } };
 
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/medicines/${editingId}`, payload, config);
+        await axios.put(`https://pharmacy-management-system-jcvq.vercel.app/api/medicines/${editingId}`, payload, config);
         alert('Medicine updated!');
         setEditingId(null);
       } else {
-        await axios.post('http://localhost:5000/api/medicines', payload, config);
+        await axios.post('https://pharmacy-management-system-jcvq.vercel.app/api/medicines', payload, config);
         alert('Medicine added to inventory!');
       }
 
@@ -276,7 +276,7 @@ export default function Home() {
 
         if (medData.name && medData.price > 0) {
           try {
-            await axios.post('http://localhost:5000/api/medicines', medData, config);
+            await axios.post('https://pharmacy-management-system-jcvq.vercel.app/api/medicines', medData, config);
             successCount++;
           } catch (err: any) {
             // Yahan JSON.stringify lagane se object saaf text ki shakal mein print hoga
@@ -298,7 +298,7 @@ export default function Home() {
     if (confirm('Are you sure you want to delete this medicine?')) {
       const token = localStorage.getItem('token');
       try {
-        await axios.delete(`http://localhost:5000/api/medicines/${id}`, {
+        await axios.delete(`https://pharmacy-management-system-jcvq.vercel.app/api/medicines/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         fetchData();
@@ -355,7 +355,7 @@ export default function Home() {
     if (cart.length === 0) return alert('Cart is empty!');
     const token = localStorage.getItem('token');
     try {
-      const response = await axios.post('http://localhost:5000/api/sales', {
+      const response = await axios.post('https://pharmacy-management-system-jcvq.vercel.app/api/sales', {
         items: cart.map((item) => ({ medicineId: item.medicineId, quantity: item.quantity }))
       }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -831,7 +831,7 @@ export default function Home() {
             onClick={async () => {
               try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get('http://localhost:5000/api/system/backup', {
+                const response = await axios.get('https://pharmacy-management-system-jcvq.vercel.app/api/system/backup', {
                   headers: { Authorization: `Bearer ${token}` },
                   responseType: 'blob',
                 });

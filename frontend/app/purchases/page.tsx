@@ -42,9 +42,9 @@ export default function PurchasesPage() {
     try {
       const config = { headers: { Authorization: `Bearer ${token}` } };
       const [supRes, purRes, medRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/suppliers', config),
-        axios.get('http://localhost:5000/api/purchases', config),
-        axios.get('http://localhost:5000/api/medicines', config)
+        axios.get('https://pharmacy-management-system-jcvq.vercel.app/api/suppliers', config),
+        axios.get('https://pharmacy-management-system-jcvq.vercel.app/api/purchases', config),
+        axios.get('https://pharmacy-management-system-jcvq.vercel.app/api/medicines', config)
       ]);
 
       if (supRes.data?.data) setSuppliers(supRes.data.data);
@@ -66,7 +66,7 @@ export default function PurchasesPage() {
     const token = localStorage.getItem('token');
     try {
       console.log('Submitting supplier:', supplierForm);
-      const response = await axios.post('http://localhost:5000/api/suppliers', supplierForm, {
+      const response = await axios.post('https://pharmacy-management-system-jcvq.vercel.app/api/suppliers', supplierForm, {
         headers: { Authorization: `Bearer ${token}` }
       });
       console.log('Supplier success:', response.data);
@@ -111,7 +111,7 @@ export default function PurchasesPage() {
       };
 
       console.log('Submitting purchase:', payload);
-      await axios.post('http://localhost:5000/api/purchases', payload, {
+      await axios.post('https://pharmacy-management-system-jcvq.vercel.app/api/purchases', payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert('Purchase recorded and stock updated successfully!');
