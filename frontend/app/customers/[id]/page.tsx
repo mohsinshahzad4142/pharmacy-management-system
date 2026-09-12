@@ -23,14 +23,14 @@ export default function CustomerLedgerDetailPage() {
   const fetchData = async () => {
     try {
       // 1. Fetch all customers to find specific customer's details & totalDue
-      const custRes = await axios.get('http://localhost:5000/api/customers');
+      const custRes = await axios.get('https://pharmacy-management-system-jcvq.vercel.app/api/customers');
       if (custRes.data?.data) {
         const found = custRes.data.data.find((c: any) => c.id === Number(customerId));
         setCustomer(found);
       }
 
       // 2. Fetch ledger history
-      const ledgerRes = await axios.get(`http://localhost:5000/api/customers/${customerId}/ledger`);
+      const ledgerRes = await axios.get(`https://pharmacy-management-system-jcvq.vercel.app/api/customers/${customerId}/ledger`);
       if (ledgerRes.data?.data) {
         setLedgerEntries(ledgerRes.data.data);
       }
@@ -50,7 +50,7 @@ export default function CustomerLedgerDetailPage() {
   const handleTransactionSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post(`http://localhost:5000/api/customers/${customerId}/ledger`, {
+      await axios.post(`https://pharmacy-management-system-jcvq.vercel.app/api/customers/${customerId}/ledger`, {
         transactionType: transForm.transactionType,
         amount: Number(transForm.amount),
         description: transForm.description
